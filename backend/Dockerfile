@@ -1,8 +1,6 @@
-# Use Node.js official image
-FROM node:20-alpine
-
-# Install curl for healthcheck
-RUN apk add --no-cache curl
+# Multi-stage build for optimized production image
+# Stage 1: Builder
+FROM node:20-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -10,21 +8,52 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install all dependencies (including dev dependencies for building)
+RUN npm ci
 
 # Copy application code
 COPY . .
 
-# Create uploads directory
-RUN mkdir -p storage/avatars storage/banners storage/services
+# Remove dev dependencies and clean cache
+RUN npm prune --production && \
+    npm cache clean --force
 
-# Expose port
-EXPOSE 8080
+# Stage 2: Production
+FROM node:20-alpine AS production
+
+# Install curl for healthcheck and dumb-init for proper signal handling
+RUN apk add --no-cache curl dumb-init
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files and node_modules from builder
+COPY --from=builder --chown=nodejs:nodejs /app/package*.json ./
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
+
+# Copy application code
+COPY --chown=nodejs:nodejs . .
+
+# Create storage directories with proper permissions
+RUN mkdir -p storage/avatars storage/banners storage/services && \
+    chown -R nodejs:nodejs storage
+
+# Switch to non-root user
+USER nodejs
+
+# Expose port (using env variable for flexibility)
+EXPOSE 5000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD curl -f http://localhost:8080/api/health || exit 1
+  CMD curl -f http://localhost:5000/api/health || exit 1
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["node", "server.js"]

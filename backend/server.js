@@ -107,6 +107,9 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// Import new health routes (with detailed checks)
+const healthRoutes = require('./src/api/routes/v1/health.routes');
+
 // Security middleware
 setupSecurity(app, { allowedOrigins });
 
@@ -238,6 +241,7 @@ app.get('/', (req, res) => {
 });
 
 // API routes
+app.use('/api', healthRoutes); // New health check routes
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes); // New cookie-based auth endpoints
 app.use('/api/services', serviceRoutes);
@@ -250,6 +254,14 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/banking', require('./routes/bankingRoutes'));
 app.use('/api/app-version', require('./routes/appVersionRoutes'));
+
+// Swagger API Documentation
+const { specs, swaggerUi } = require('./src/utils/swagger');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
+// Centralized error handling middleware (must be after all routes)
+const errorHandler = require('./src/api/middlewares/error.middleware');
+app.use(errorHandler);
 
 // Initialize NotificationService
 const NotificationService = require('./services/NotificationService');
