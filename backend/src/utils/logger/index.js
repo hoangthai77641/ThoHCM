@@ -20,8 +20,8 @@ const consoleFormat = winston.format.combine(
   })
 );
 
-// Create logs directory
-const logsDir = path.join(__dirname, '../../../logs');
+// Create logs directory at project root
+const logsDir = process.env.LOG_DIR || path.join(__dirname, '../../../logs');
 
 // Transport for error logs
 const errorFileRotateTransport = new DailyRotateFile({

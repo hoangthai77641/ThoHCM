@@ -1,7 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const { getRedisClient } = require('../../../config/redis');
+
+// Try to load Redis client, but don't fail if it doesn't exist yet
+let getRedisClient;
+try {
+  const redisConfig = require('../../../config/redis');
+  getRedisClient = redisConfig.getRedisClient;
+} catch (err) {
+  // Redis config not available, that's OK for health checks
+  getRedisClient = () => null;
+}
 
 /**
  * @route   GET /api/health
@@ -45,18 +54,17 @@ router.get('/ready', async (req, res) => {
     checks.status = 'degraded';
   }
 
-  // Check Redis connection
+  // Check Redis connection (optional)
   try {
     const redisClient = getRedisClient();
     if (redisClient && redisClient.status === 'ready') {
       checks.checks.redis = 'connected';
     } else {
       checks.checks.redis = 'disconnected';
-      checks.status = 'degraded';
+      // Redis is optional, so don't mark as degraded
     }
   } catch (error) {
-    checks.checks.redis = 'error';
-    checks.status = 'degraded';
+    checks.checks.redis = 'not configured';
   }
 
   const statusCode = checks.status === 'ok' ? 200 : 503;

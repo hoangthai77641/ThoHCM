@@ -20,7 +20,7 @@
     "migrate:bookings": "node scripts/migrateBookings.js",
     "audit": "npm audit --audit-level=moderate",
     "audit:fix": "npm audit fix",
-    "prepare": "cd .. && husky install backend/.husky || true"
+    "prepare": "cd .. && [ -d .git ] && husky install backend/.husky || echo 'Skipping husky install (not a git repo or standalone backend)'"
   },
   "keywords": ["thohcm", "home-services", "booking", "vietnamese"],
   "author": "ThoHCM Team",
