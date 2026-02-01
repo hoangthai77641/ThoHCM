@@ -17,6 +17,53 @@
 
 Thợ HCM is a comprehensive digital platform that connects customers with skilled technicians for electrical and refrigeration repair services in Ho Chi Minh City. Built with modern technologies, it provides seamless booking, real-time tracking, and efficient service management.
 
+## 🏗️ Architecture
+
+The project follows **Clean Architecture** principles with clear separation of concerns:
+
+- **API Layer** (`src/api`): HTTP endpoints, controllers, middleware, validators
+- **Core Layer** (`src/core`): Business-agnostic functionality, config, constants, errors
+- **Domain Layer** (`src/domain`): Business logic, models, repositories, services
+- **Infrastructure Layer** (`src/infrastructure`): External services (database, storage, cache)
+- **Utils Layer** (`src/utils`): Utilities, helpers, logging
+
+📚 **Documentation**: See [Backend Architecture](docs/architecture/backend-architecture.md) for detailed information.
+
+## 🚀 Quick Start
+
+### Using Docker (Recommended)
+
+```bash
+# Clone and start all services
+git clone https://github.com/hoangthai77641/ThoHCM.git
+cd ThoHCM
+docker-compose up -d
+
+# Access services
+# Backend: http://localhost:5000
+# API Docs: http://localhost:5000/api-docs
+# MongoDB: localhost:27017
+# Redis: localhost:6379
+```
+
+### Manual Setup
+
+```bash
+# Backend
+cd backend
+npm install
+cp .env.example .env
+npm run dev
+
+# Web
+cd web
+npm install
+cp .env.example .env
+npm run dev
+```
+
+📚 **Full Setup Guide**: See [docs/guides/setup.md](docs/guides/setup.md)
+
 ## 🌐 Frontend Migration (Able Pro React TS)
 
 The legacy `web/` React client has been replaced and the folder removed in favor of the Able Pro Material React TypeScript templates:
@@ -83,8 +130,75 @@ The old `web/` folder has been removed (see prior commit history for reference).
 ## 📁 Project Structure
 
 ```
+ThoHCM/
+├── 📂 backend/                     # Backend API (Node.js + Express)
+│   ├── src/                        # Clean Architecture structure
+│   │   ├── api/                    # API layer (routes, controllers, middleware)
+│   │   ├── core/                   # Core business logic
+│   │   ├── domain/                 # Domain models and services
+│   │   ├── infrastructure/         # External services
+│   │   └── utils/                  # Utilities and helpers
+│   ├── tests/                      # Test suites (unit, integration, e2e)
+│   ├── .env.example                # Environment template
+│   ├── Dockerfile                  # Multi-stage Docker build
+│   ├── jest.config.js              # Jest configuration
+│   └── package.json                # Dependencies and scripts
+├── 📂 web/                         # Web frontend (React + Vite)
+│   ├── src/                        # Source code
+│   ├── public/                     # Static assets
+│   ├── tools/                      # Development tools
+│   └── .env.example                # Environment template
+├── 📂 mobile/                      # Mobile apps (Flutter)
+│   └── worker_app/                 # Worker mobile application
+├── 📂 docs/                        # Documentation
+│   ├── architecture/               # Architecture docs
+│   ├── api/                        # API documentation
+│   ├── guides/                     # Setup and guides
+│   └── DEPLOYMENT.md               # Deployment guide
+├── 📂 .github/                     # GitHub configuration
+│   ├── workflows/                  # CI/CD pipelines
+│   └── ISSUE_TEMPLATE/             # Issue templates
+├── 📂 scripts/                     # Automation scripts
+├── docker-compose.yml              # Local development setup
+├── CHANGELOG.md                    # Version history
+├── CONTRIBUTING.md                 # Contribution guidelines
+└── README.md                       # This file
+```
+
+### Backend Clean Architecture
+
+```
+backend/src/
+├── api/                          # API Layer
+│   ├── routes/v1/                # API v1 endpoints
+│   ├── controllers/              # Request handlers
+│   ├── middlewares/              # Express middleware
+│   └── validators/               # Request validation
+├── core/                         # Core Layer
+│   ├── config/                   # Configuration
+│   ├── constants/                # Constants
+│   └── errors/                   # Custom errors
+├── domain/                       # Domain Layer
+│   ├── models/                   # Mongoose models
+│   ├── repositories/             # Data access
+│   └── services/                 # Business logic
+├── infrastructure/               # Infrastructure Layer
+│   ├── database/                 # Database setup
+│   ├── socket/                   # Socket.IO
+│   ├── storage/                  # File storage
+│   └── cache/                    # Redis cache
+└── utils/                        # Utilities
+    ├── logger/                   # Winston logger
+    └── swagger.js                # API documentation
+```
+
+## Legacy Structure (Deprecated)
+
+The following folders still exist but are being phased out:
+
+```
 thohcm/
-├── 📚 docs/                    # Documentation
+├── 📚 docs/                    # Documentation (old)
 │   ├── DEPLOYMENT.md           # Deployment guide
 │   ├── DEPLOYMENT_STATUS.md    # Current deployment status
 │   ├── CLOUDRUN_MIGRATION.md   # Migration guide
