@@ -1,0 +1,25 @@
+# Ignore artifacts:
+node_modules
+dist
+build
+coverage
+
+# Ignore all HTML files
+*.html
+
+# Ignore generated files
+package-lock.json
+yarn.lock
+
+# Ignore compiled output
+*.min.js
+*.min.css
+
+# Ignore docs
+docs/
+
+# Ignore specific directories
+.git
+.cache
+.next
+.nuxt

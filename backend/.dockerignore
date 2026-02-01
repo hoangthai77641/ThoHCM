@@ -1,6 +1,8 @@
 node_modules
 npm-debug.log
 .env
+.env.*
+!.env.example
 .git
 .gitignore
 README.md
@@ -13,3 +15,39 @@ coverage
 .vscode
 *.log
 .gcloudignore
+
+# Additional ignores
+*.md
+!README.md
+tests
+*.test.js
+*.spec.js
+.eslintrc.js
+.prettierrc
+nodemon.json
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Build artifacts
+dist
+build
+
+# Logs
+logs
+
+# OS files
+Thumbs.db
+
+# Temporary files
+tmp
+temp
+*.tmp
+*.bak
+*.backup
+
+# Storage directories (keep structure but not files)
+storage/avatars/*
+storage/banners/*
+storage/services/*
+!storage/**/.gitkeep
