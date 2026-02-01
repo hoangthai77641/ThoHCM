@@ -19,7 +19,8 @@
     "check:atlas": "node scripts/checkAtlas.js",
     "migrate:bookings": "node scripts/migrateBookings.js",
     "audit": "npm audit --audit-level=moderate",
-    "audit:fix": "npm audit fix"
+    "audit:fix": "npm audit fix",
+    "prepare": "cd .. && husky install backend/.husky || true"
   },
   "keywords": ["thohcm", "home-services", "booking", "vietnamese"],
   "author": "ThoHCM Team",
